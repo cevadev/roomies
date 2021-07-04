@@ -41,7 +41,40 @@
     <footer-partial></footer-partial>
     <!-- Modals, cuando se emite el vento close-modal se ejecuta la funcion closeModal-->
     <modal :show="modals.login" @close-modal="closeModal">
-      <h1>Modal Title</h1>
+      <h2 class="text-grey-darkest font-semibold text-center mb-6">
+        Welcome to Platzi Rooms
+      </h2>
+      <form>
+        <div class="mb-4">
+          <label class="input__label">Email</label>
+          <div class="form__field relative">
+            <input
+              class="input__field"
+              type="text"
+              placeholder="bruce.wayne@imnotbatman.org"
+              v-model="formLogin.email"
+            />
+          </div>
+        </div>
+        <div class="mb-4">
+          <label class="input__label">Password</label>
+          <div class="form__field relative">
+            <input
+              class="input__field"
+              type="password"
+              placeholder="*********"
+              v-model="formLogin.password"
+            />
+          </div>
+        </div>
+        <div class="mb-4">
+          <toggle-input v-model="formLogin.rememberMe"></toggle-input>
+          Remember me
+        </div>
+        <div class="mb-4">
+          <button class="btn btn-primary mr-3 w-full">Login</button>
+        </div>
+      </form>
     </modal>
   </div>
 </template>
@@ -52,13 +85,25 @@ import { mapGetters } from "vuex";
 import HeaderPartial from "@/partials/HeaderPartial.vue";
 import FooterPartial from "@/partials/FooterPartial.vue";
 import Modal from "@/components/Modal.vue";
+import ToggleInput from "@/components/ToggleInput.vue";
 
 export default {
   name: "DefaultLayout",
+  data() {
+    return {
+      formLogin: {
+        email: "",
+        password: "",
+        rememberMe: false,
+      },
+    };
+  },
+
   components: {
     HeaderPartial,
     FooterPartial,
     Modal,
+    ToggleInput,
   },
 
   computed: {
