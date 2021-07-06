@@ -11,7 +11,8 @@
         </div>
         <div class="flex items-center w-auto">
           <div class="items__controls">
-            <div class="flex" v-if="false">
+            <!--si hay un user autenticado mostramos el menu-->
+            <div class="flex" v-if="user">
               <button class="mr-2 flex items-center">
                 <i class="material-icons">add</i>
               </button>
@@ -25,7 +26,8 @@
                   alt="Avatar of Javier Diaz"
                 />
                 <div class="text-sm">
-                  <p class="text-black leading-none">Javier Diaz</p>
+                  <!--recuperamos info del user-->
+                  <p class="text-black leading-none">{{ user.name }}</p>
                   <p class="text-grey-dark">Online</p>
                 </div>
               </div>
@@ -51,6 +53,7 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 export default {
   name: "HeaderPartial",
   data() {
@@ -69,6 +72,13 @@ export default {
     signUp() {
       console.log("Sign Up Click");
     },
+  },
+
+  computed: {
+    ...mapGetters({
+      // recuperamos la info del user autenticado
+      user: "authUser",
+    }),
   },
 };
 </script>

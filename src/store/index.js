@@ -1,10 +1,16 @@
 import Vue from "vue";
 import Vuex from "vuex";
 
+import sourceData from "../data.json";
+
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
+    // adicionamos los datos de nuestro archivo data.json con el spread operator
+    ...sourceData,
+    user: null,
+    authId: "38St7Q8Zi2N1SPa5ahzssq9kbyp1",
     modals: {
       login: false,
     },
@@ -34,6 +40,12 @@ export default new Vuex.Store({
   getters: {
     // funcion que retorna los datos del state
     modals: (state) => state.modals,
+    // recibe el state y retorna el user con la authId que hemos definido dentro del Vuex
+    // getter se va al state dentro del state esta el objeto user y obtenemos el user cuyo authId coincida
+    authUser: (state) => state.users[state.authId],
+
+    // obtenemos las habtaciones
+    rooms: (state) => state.rooms,
   },
   modules: {},
 });
