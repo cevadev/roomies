@@ -2,12 +2,13 @@ import Vue from "vue";
 import Vuex from "vuex";
 
 import sourceData from "../data.json";
+import countObjectProperties from "../utils/countobjectprops.js";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    // adicionamos los datos de nuestro archivo data.json con el spread operator
+    // volcamos los datos de nuestro archivo data.json con el spread operator
     ...sourceData,
     user: null,
     authId: "38St7Q8Zi2N1SPa5ahzssq9kbyp1",
@@ -46,6 +47,10 @@ export default new Vuex.Store({
 
     // obtenemos las habtaciones
     rooms: (state) => state.rooms,
+
+    // le pasamos el id
+    userRoomsCount: (state) => (id) =>
+      countObjectProperties(state.users[id].rooms),
   },
   modules: {},
 });
