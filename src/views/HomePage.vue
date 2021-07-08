@@ -43,6 +43,10 @@ import { mapGetters } from "vuex";
 
 export default {
   name: "HomePage",
+  // antes que se cree este componente vamos a traer de firebase solo 12 rooms para mostrarlos en la vista
+  beforeCreate() {
+    this.$store.dispatch("FETCH_ROOMS", 12);
+  },
   components: {
     DefaultLayout,
   },
