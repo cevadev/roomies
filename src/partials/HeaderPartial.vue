@@ -3,19 +3,23 @@
     <div class="container">
       <div class="flex items-center justify-between flex-wrap">
         <div class="flex items-center flex-no-shrink mr-6">
-          <a
+          <router-link
             class="text-black hover:text-grey-darkest no-underline font-semibold text-lg"
-            href="#"
-            >Platzi Rooms</a
+            :to="{ name: 'HomePage' }"
           >
+            Platzi Rooms
+          </router-link>
         </div>
         <div class="flex items-center w-auto">
           <div class="items__controls">
             <!--si hay un user autenticado mostramos el menu-->
             <div class="flex" v-if="user">
-              <button class="mr-2 flex items-center">
+              <router-link
+                :to="{ name: 'CreateHousePage' }"
+                class="no-underline mr-2 flex items-center text-grey-darkest"
+              >
                 <i class="material-icons">add</i>
-              </button>
+              </router-link>
               <button class="mr-4 flex items-center">
                 <i class="material-icons">notifications</i>
               </button>

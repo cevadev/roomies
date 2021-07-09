@@ -95,6 +95,7 @@ export default new Vuex.Store({
       // query que actualiza dentro de la coleccion rooms, el elemento con el roomId, se agregamos la nueva publicac
       updates[`rooms/${roomId}`] = newRoom;
       /// query que actualiza dentro de la coleccion users
+      // path -> users/userId/rooms/roomId
       updates[`users/${newRoom.userId}/rooms/${roomId}`] = roomId;
       // le indicamos a firebase que queremos hacer estas actualizaciones
       firebase

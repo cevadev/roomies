@@ -98,6 +98,7 @@ export default {
 
       // lanzamos los actions definidos en el store/index.js
       this.$store.dispatch("CREATE_ROOM", room).then(() => {
+        // al hacer click en publicar nos dirige a la pagina search
         this.$router.push({ name: "SearchPage" });
       });
       // this.$store.dispatch("CREATE_ROOM", room);
