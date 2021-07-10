@@ -44,7 +44,7 @@
       <h2 class="text-grey-darkest font-semibold text-center mb-6">
         Welcome to Platzi Rooms
       </h2>
-      <form>
+      <form @submit.prevent="loginHandlerSubmit">
         <div class="mb-4">
           <label class="input__label">Email</label>
           <div class="form__field relative">
@@ -76,6 +76,50 @@
         </div>
       </form>
     </modal>
+
+    <modal :show="modals.register" @close-modal="closeModalRegister">
+      <form class="form" @submit.prevent="registerHandlerSubmit">
+        <div class="mb-4">
+          <label class="input__label" for="email">Email</label>
+          <div class="form__field relative">
+            <input
+              class="input__field"
+              id="email"
+              v-model="formRegister.email"
+              type="email"
+              placeholder="bruce.wayne@imnotbatman.org"
+            />
+          </div>
+        </div>
+        <div class="mb-4">
+          <label class="input__label" for="email">Name</label>
+          <div class="form__field relative">
+            <input
+              class="input__field"
+              id="name"
+              v-model="formRegister.name"
+              type="text"
+              placeholder="Bruce Wayne"
+            />
+          </div>
+        </div>
+        <div class="mb-4">
+          <label class="input__label" for="password">Password</label>
+          <div class="form__field relative">
+            <input
+              class="input__field"
+              id="password"
+              v-model="formRegister.password"
+              type="password"
+              placeholder="Create a Password"
+            />
+          </div>
+        </div>
+        <div class="mb-4">
+          <button class="btn w-full">Create account</button>
+        </div>
+      </form>
+    </modal>
   </div>
 </template>
 
@@ -91,10 +135,17 @@ export default {
   name: "DefaultLayout",
   data() {
     return {
+      // state local
       formLogin: {
         email: "",
         password: "",
         rememberMe: false,
+      },
+      // state local
+      formRegister: {
+        email: "",
+        name: "",
+        password: "",
       },
     };
   },
@@ -118,6 +169,30 @@ export default {
         name: "login",
         value: false,
       });
+    },
+    closeModalRegister() {
+      this.$store.dispatch("TOGGLE_MODAL_STATE", {
+        name: "register",
+        value: false,
+      });
+    },
+    registerHandlerSubmit() {
+      // llamamos dentro del store local la action CREATE_USER
+      this.$store.dispatch("CREATE_USER", this.formRegister).then(() => {
+        // Resolvemos la promesa, ocultando el modal
+        this.closeModalRegister();
+      });
+    },
+
+    loginHandlerSubmit() {
+      this.$store
+        .dispatch("SIGN_IN", {
+          email: this.formLogin.email,
+          password: this.formLogin.password,
+        })
+        .then(() => {
+          this.closeModal();
+        });
     },
   },
 };

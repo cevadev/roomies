@@ -22,11 +22,22 @@ const firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
+// le decimos a firebase que escuche el cambio en la autenticacion del usuario
+firebase.auth().onAuthStateChanged((user) => {
+  if (user) {
+    // lanzamos la accion para obtener al user autenticado
+    store.dispatch("FETCH_AUTH_USER");
+  }
+});
+
 new Vue({
   router,
   store,
   render: (h) => h(App),
   beforeCreate() {
-    this.$store.dispatch("FETCH_USER", { id: store.state.authId });
+    // este FETCH_USER se lanzará cuando exista un user authenticated
+    if (store.state.authId) {
+      this.$store.dispatch("FETCH_USER", { id: store.state.authId });
+    }
   },
 }).$mount("#app");

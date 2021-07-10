@@ -18,9 +18,11 @@ export default new Vuex.Store({
     users: {},
     services: {},
     rooms: {},
-    authId: "38St7Q8Zi2N1SPa5ahzssq9kbyp1",
+    // sin authentication
+    authId: null,
     modals: {
       login: false,
+      register: false,
     },
   },
   mutations: {
@@ -59,6 +61,10 @@ export default new Vuex.Store({
       newItem[".key"] = id;
       // seteamos los valores dentro del state con el room, roomId y el nuevo campo .key
       Vue.set(state[resource], id, newItem);
+    },
+    // establecemos (cambiamos) el authId en nuestro state local
+    SET_AUTHID(state, id) {
+      state.authId = id;
     },
   },
   actions: {
@@ -168,14 +174,69 @@ export default new Vuex.Store({
             resolve(state.users[id]);
           });
       }),
+
+    CREATE_USER: ({ state, commit }, { email, name, password }) =>
+      // 1. Registramos en user en firebase authentication
+      // 2. Registramos el user en nuestr BD en firebase realtime database para conservar los datos
+      new Promise((resolve) => {
+        firebase
+          .auth()
+          .createUserWithEmailAndPassword(email, password)
+          // retorna una promise con la credenciales generadas
+          .then((account) => {
+            const id = account.user.uid;
+            const registeredAt = Math.floor(Date.now() / 1000);
+            const newUser = { email, name, registeredAt };
+            // realizada la authentication almacenamos los datos del user n firebase realtime
+            firebase
+              .database()
+              .ref("users")
+              .child(id)
+              .set(newUser)
+              .then(() => {
+                // la promise resuelve enviando al Vuex el user registrado para estar disponible en el store local
+                commit("SET_ITEM", { resource: "users", id, item: newUser });
+                resolve(state.users[id]);
+              });
+          });
+      }),
+
+    // obtenemos al user authenticated
+    FETCH_AUTH_USER: ({ dispatch, commit }) => {
+      // obtenemos el id del user recientemente autenticado en firebase
+      const userId = firebase.auth().currentUser.uid;
+      // Obtenemos el user y lo registramos en nuestro local state
+      return dispatch("FETCH_USER", { id: userId }).then(() => {
+        // lanzamos el mutator para setear el authId
+        commit("SET_AUTHID", userId);
+      });
+    },
+
+    // action autentication
+    SIGN_IN(context, { email, password }) {
+      // buscamos en la BD de firebase authentication el user con email y password
+      return firebase.auth().signInWithEmailAndPassword(email, password);
+    },
+
+    // action close session
+    LOG_OUT({ commit }) {
+      firebase
+        .auth()
+        .signOut()
+        .then(() => {
+          commit("SET_AUTHID", null);
+        });
+    },
   },
   getters: {
     // funcion que retorna los datos del state
     modals: (state) => state.modals,
     // recibe el state y retorna el user con la authId que hemos definido dentro del Vuex
     // getter se va al state dentro del state esta el objeto user y obtenemos el user cuyo authId coincida
-    authUser: (state) => state.users[state.authId],
-
+    authUser(state) {
+      // si existe un authId, vamos al state y obtenemos el user de lo contario null
+      return state.authId ? state.users[state.authId] : null;
+    },
     // obtenemos las habtaciones
     rooms: (state) => state.rooms,
 
